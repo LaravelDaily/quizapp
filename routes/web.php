@@ -6,6 +6,7 @@ use App\Http\Controllers\AppUserController;
 use App\Http\Controllers\ManageUserController;
 use App\Http\Controllers\SectionsController;
 use App\Http\Controllers\QuestionsController;
+use App\Http\Controllers\AppUserDashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -28,52 +29,22 @@ Route::middleware(['auth', 'verified', 'role:admin'])->prefix('admin')->group(fu
 
     Route::get('/users', [ManageUserController::class, 'index'])->name('usersIndex');
 
-    Route::get('/adminhome', [AdminController::class, 'adminhome'])->name('adminhome');
+    Route::get('/adminhome', [AdminController::class, 'index'])->name('adminhome');
 
-    Route::get('/createSection', [SectionsController::class, 'createSection'])
-        ->name('createSection');
+    Route::resource('sections', SectionsController::class);
 
-    Route::post('/deleteSection/{id}', [SectionsController::class, 'deleteSection'])
-        ->name('deleteSection');
-
-    Route::post('/storeSection/section', [SectionsController::class, 'storeSection'])
-        ->name('storeSection');
-
-    Route::get('/editSection/{section}', [SectionsController::class, 'editSection'])
-        ->name('editSection');
-
-    Route::post('/updateSection/{section}', [SectionsController::class, 'updateSection'])
-        ->name('updateSection');
-
-    Route::get('/listSection', [SectionsController::class, 'listSection'])
-        ->name('listSection');
-
-    Route::get('/detailSection/{section}', [SectionsController::class, 'detailSection'])
-        ->name('detailSection');
-
-    Route::get('/createQuestion/{section}', [QuestionsController::class, 'createQuestion'])
-        ->name('createQuestion');
-
-    Route::get('/detailQuestion/{question}', [QuestionsController::class, 'detailQuestion'])
-        ->name('detailQuestion');
-
-    Route::post('/storeQuestion/{section}', [QuestionsController::class, 'storeQuestion'])
-        ->name('storeQuestion');
-    Route::post('/deleteQuestion/{id}', [QuestionsController::class, 'deleteQuestion'])
-        ->name('deleteQuestion');
+    // Nemenau, kad dėl 2 route verta šitam resource daryt, nes create ir store nestandartiniai pas jį
+    Route::resource('questions', QuestionsController::class)->only(['show', 'destroy']);
+    Route::get('questions/create/{section}', [QuestionsController::class, 'create'])->name('questions.create');
+    Route::post('questions/store/{section}', [QuestionsController::class, 'store'])->name('questions.store');
+    /*Route::get('questions/{question}', [QuestionsController::class, 'show'])->name('questions.show');
+    Route::delete('questions/{question}', [QuestionsController::class, 'destroy'])->name('questions.destroy');*/
 });
 
 Route::middleware(['auth', 'verified', 'role:admin|user'])->prefix('appuser')->group(function () {
 
-    Route::get('/userQuizHome', [AppUserController::class, 'userQuizHome'])
+    Route::get('/userQuizHome', AppUserDashboardController::class)
         ->name('userQuizHome');
 
-    Route::get('/userQuizDetails/{id}', [AppUserController::class, 'userQuizDetails'])
-        ->name('userQuizDetails');
-
-    Route::post('/deleteUserQuiz/{id}', [AppUserController::class, 'deleteUserQuiz'])
-        ->name('deleteUserQuiz');
-
-    Route::get('/startQuiz', [AppUserController::class, 'startQuiz'])
-        ->name('startQuiz');
+    Route::resource('quiz', AppUserController::class)->only(['create', 'show', 'destroy']);
 });

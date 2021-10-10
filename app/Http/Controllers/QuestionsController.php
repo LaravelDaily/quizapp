@@ -11,21 +11,19 @@ use Illuminate\Support\Facades\Auth;
 
 class QuestionsController extends Controller
 {
-    public function createQuestion(Section $section)
+    public function create(Section $section)
     {
-        $section = $section;
         return view('admins.create_question', compact('section'));
     }
 
-    public function detailQuestion(Question $question)
+    public function show(Question $question)
     {
         $answers = $question->answers()->paginate(10);
         return view('admins.detail_question', compact('question', 'answers'));
     }
 
-    public function storeQuestion(Section $section, Request $request)
+    public function store(Section $section, Request $request)
     {
-        $section = $section;
         $data = $request->validate([
             'question' => ['required', Rule::unique('questions')],
             'explanation' => 'required',
@@ -33,7 +31,6 @@ class QuestionsController extends Controller
             'answers.*.answer' => 'required',
             'answers.*.is_checked' => 'present'
         ]);
-
 
         $question = Question::create([
             'question' => $request->question,
@@ -43,16 +40,15 @@ class QuestionsController extends Controller
             'section_id' => $section->id,
         ]);
 
-        $status = $question->answers()->createMany($data['answers'])->push();
-        return redirect()->route('detailSection', $section->id)
+        $question->answers()->createMany($data['answers'])->push();
+        return redirect()->route('sections.show', $section->id)
             ->withSuccess('Question created successfully');;
     }
 
-    function deleteQuestion($id)
+    public function destroy(Question $question)
     {
-        $question = Question::findOrFail($id);
         $question->delete();
-        return redirect()->route('detailSection', $question->section->id)
+        return redirect()->route('sections.show', $question->section->id)
             ->withSuccess('Question with id: ' . $question->id . ' deleted successfully');
     }
 }

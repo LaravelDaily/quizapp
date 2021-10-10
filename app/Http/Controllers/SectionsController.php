@@ -9,33 +9,33 @@ use Illuminate\Support\Facades\Redirect;
 
 class SectionsController extends Controller
 {
-    public function createSection()
-    {
-        return view('admins.create_section');
-    }
-
-    public function listSection()
+    public function index()
     {
         $sections = Section::withCount('questions')->paginate(10);
         //$sections = Section::where('is_active', '1')->paginate(5);
         return view('admins.list_sections', compact('sections'));
     }
 
-    public function storeSection(Request $request)
+    public function create()
+    {
+        return view('admins.create_section');
+    }
+
+    public function store(Request $request)
     {
         $data = $request->validate([
             'section.*' => 'required',
         ]);
         auth()->user()->sections()->createMany($data);
-        return redirect()->route('listSection')->with('success', 'Section created successfully!');
+        return redirect()->route('sections.index')->with('success', 'Section created successfully!');
     }
 
-    public function editSection(Section $section)
+    public function edit(Section $section)
     {
         return view('admins.edit_section', compact('section'));
     }
 
-    public function updateSection(Section $section, Request $request)
+    public function update(Section $section, Request $request)
     {
         $data = $request->validate([
             'name' => 'required|min:5|max:255',
@@ -43,23 +43,22 @@ class SectionsController extends Controller
             'is_active' => 'required',
             'details' =>    'required|min:10|max:1024',
         ]);
-        $record = Section::findOrFail($section->id);
-        $input = $request->all();
-        $record->fill($input)->save();
+
+        $section->update($data);
+
         session()->flash('success', 'Section saved successfully!');
-        return redirect()->route('listSection');
+        return redirect()->route('sections.index');
     }
 
-    public function detailSection(Section $section)
+    public function show(Section $section)
     {
         $questions = $section->questions()->paginate(10);
         return view('admins.detail_sections', compact('questions', 'section'));
     }
 
-    public function deleteSection($id)
+    public function destroy(Section $section)
     {
         //$sections = Section::paginate(10);
-        $section = Section::findOrFail($id);
         $section->delete();
         return redirect()->back()->withSuccess('Section with id: ' . $section->id . ' deleted successfully');
     }

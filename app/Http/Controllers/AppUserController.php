@@ -10,64 +10,18 @@ use App\Models\QuizHeader;
 
 class AppUserController extends Controller
 {
-    public function startQuiz()
+    public function create()
     {
         return view('appusers.quiz');
     }
 
-    public function userQuizHome()
-    {
-        $activeUsers = User::count();
-
-        $questionsCount = Question::where('is_active', '1')->count();
-
-        $sections = Section::withCount('questions')
-            ->where('is_active', '1')
-            ->orderBy('name')
-            ->get();
-
-        $quizesTaken = QuizHeader::count();
-
-        $userQuizzes = auth()
-            ->user()
-            ->quizHeaders()
-            ->orderBy('id', 'desc')
-            ->paginate(10);
-
-        $quizAverage = auth()->user()->quizHeaders()->avg('score');
-
-        return view(
-            'appusers.userQuizHome',
-            compact(
-                'sections',
-                'activeUsers',
-                'questionsCount',
-                'quizesTaken',
-                'userQuizzes',
-                'quizAverage'
-            )
-        );
-    }
-
-
-    public function deleteUserQuiz($id)
-    {
-        $quizheader = QuizHeader::findOrFail($id);
-        if (auth()->id() == $quizheader->user_id) {
-            $quizheader->delete();
-            return redirect()->back()
-                ->withSuccess("Quiz deleted successfully!");
-        }
-        return redirect()->back()->withWarning("Can not delete quiz!");
-    }
-    public function userQuizDetails($id)
+    public function show(QuizHeader $quiz)
     {
         // Answers with alphabetical choice
         $choice = collect(['A', 'B', 'C', 'D']);
 
         //Get quiz summary record for the given quiz
-        $userQuizDetails = QuizHeader::where('id', $id)
-            ->with('section')->first();
+        $userQuizDetails = $quiz->with('section')->first();
 
         //Extract question taken by the users stored as a serialized string while takeing the quiz
         $quizQuestionsList = collect(unserialize($userQuizDetails->questions_taken));
@@ -90,5 +44,15 @@ class AppUserController extends Controller
                 'choice'
             )
         );
+    }
+
+    public function destroy(QuizHeader $quizHeader)
+    {
+        if (auth()->id() == $quizHeader->user_id) {
+            $quizHeader->delete();
+            return redirect()->back()
+                ->withSuccess("Quiz deleted successfully!");
+        }
+        return redirect()->back()->withWarning("Can not delete quiz!");
     }
 }

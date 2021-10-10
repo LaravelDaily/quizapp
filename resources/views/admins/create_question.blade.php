@@ -10,7 +10,7 @@
                 <h2 class="text-2xl font-bold card bg-green-600 p-4 text-gray-100 rounded-t-lg mx-auto">New Question</h2>
                 <div class="mt-2 max-w-auto mx-auto card p-4 bg-white rounded-b-lg shadow-md">
                     <div class="grid grid-cols-1 gap-6">
-                        <form action="{{route('storeQuestion', $section)}}" method="post">
+                        <form action="{{route('questions.store', $section)}}" method="post">
                             @csrf
                             <label class="block">
                                 <span class="text-gray-700">Question</span>

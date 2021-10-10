@@ -11,7 +11,7 @@
         <div class="bg-white overflow-hidden shadow-xl sm:rounded-lg">
             <div class="mx-auto">
                 <div class="flex justify-between items-center py-4">
-                    <a href="{{route('createSection')}}" class="tracking-wide font-bold rounded border-2 border-blue-500 hover:border-blue-500 bg-blue-500 text-white hover:bg-blue-600 transition shadow-md py-2 px-6 items-center">Create a Section</a>
+                    <a href="{{route('sections.create')}}" class="tracking-wide font-bold rounded border-2 border-blue-500 hover:border-blue-500 bg-blue-500 text-white hover:bg-blue-600 transition shadow-md py-2 px-6 items-center">Create a Section</a>
                     <a href="{{route('adminhome')}}" class="tracking-wide font-bold rounded border-2 border-blue-500 hover:border-blue-500 bg-blue-500 text-white hover:bg-blue-600 transition shadow-md py-2 px-6 items-center">Back</a>
                 </div>
                 @if($sections->isEmpty())
@@ -53,7 +53,7 @@
                                                 <div class="flex items-center">
                                                     <div class="ml-4">
                                                         <div class="text-sm font-medium text-gray-900">
-                                                            <a class="text-blue-400 hover:underline" href="{{ route('detailSection', $section->id) }}">
+                                                            <a class="text-blue-400 hover:underline" href="{{ route('sections.show', $section->id) }}">
                                                                 {{ $section->name}}
                                                             </a>
                                                         </div>
@@ -67,19 +67,20 @@
                                                 <div class="text-sm text-gray-900">{{ $section->questions_count }}</div>
                                             </td>
                                             <td class="sm:flex align-middle justify-center items-center px-6 py-1 text-right text-sm font-medium">
-                                                <a href="{{ route('createQuestion', $section->id )}}" class="text-green-500 hover:text-green-700">
+                                                <a href="{{ route('questions.create', $section->id )}}" class="text-green-500 hover:text-green-700">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="text-blue-500 hover:text-blue-700 h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                                         <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-11a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V7z" clip-rule="evenodd" />
                                                     </svg>
                                                 </a>
-                                                <a href="{{ route('editSection', $section->id )}} " class="text-green-500 hover:text-green-700">
+                                                <a href="{{ route('sections.edit', $section->id )}} " class="text-green-500 hover:text-green-700">
                                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7" viewBox="0 0 20 20" fill="currentColor">
                                                         <path d="M17.414 2.586a2 2 0 00-2.828 0L7 10.172V13h2.828l7.586-7.586a2 2 0 000-2.828z" />
                                                         <path fill-rule="evenodd" d="M2 6a2 2 0 012-2h4a1 1 0 010 2H4v10h10v-4a1 1 0 112 0v4a2 2 0 01-2 2H4a2 2 0 01-2-2V6z" clip-rule="evenodd" />
                                                     </svg>
                                                 </a>
-                                                <form action="{{route('deleteSection',$section->id)}}" method="post">
+                                                <form action="{{route('sections.destroy',$section->id)}}" method="post">
                                                     @csrf
+                                                    @method('DELETE')
                                                     <a class="text-red-500 hover:text-red-700">
                                                         <button type="submit">
                                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-7 w-7 pt-1" viewBox="0 0 20 20" fill="currentColor">

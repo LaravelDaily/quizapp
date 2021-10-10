@@ -10,7 +10,7 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function adminhome()
+    public function index()
     {
         $sectionCount = Section::count();
         $questionCount = Question::count();

@@ -18,7 +18,7 @@
                     </x-jet-nav-link>
                     @endhasrole
                     @hasrole('user|admin|superadmin')
-                    <x-jet-nav-link href="{{ route('startQuiz') }}" :active="request()->routeIs('startQuiz')">
+                    <x-jet-nav-link href="{{ route('quiz.create') }}" :active="request()->routeIs('quiz.create')">
                         {{ __('Take Quiz') }}
                     </x-jet-nav-link>
                     <x-jet-nav-link href="{{ route('userQuizHome') }}" :active="request()->routeIs('userQuizHome')">
@@ -153,7 +153,7 @@
             </x-jet-responsive-nav-link>
             @endhasrole
             @hasrole('user|admin|superadmin')
-            <x-jet-responsive-nav-link href="{{ route('startQuiz') }}" :active="request()->routeIs('startQuiz')">
+            <x-jet-responsive-nav-link href="{{ route('quiz.create') }}" :active="request()->routeIs('quiz.create')">
                 {{ __('Take Quiz') }}
             </x-jet-responsive-nav-link>
             <x-jet-responsive-nav-link href="{{ route('userQuizHome') }}" :active="request()->routeIs('userQuizHome')">
